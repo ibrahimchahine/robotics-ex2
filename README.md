@@ -1,5 +1,7 @@
 # robotics-ex2
 
+![Alt text]("Title")
+
 This repo is for exercise 2 in the robotics course in ariel university.
 
 ## Our code scans frame by frame and return the following:
