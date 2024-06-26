@@ -106,7 +106,7 @@ def is_datamatrix_like(roi):
 
 
 # Open the video file
-input_video_path = "vid.mp4"
+input_video_path = "challengeB.mp4"
 output_video_path = "output_video_with_datamatrix.mp4"
 cap = cv2.VideoCapture(input_video_path)
 
