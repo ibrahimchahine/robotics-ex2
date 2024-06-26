@@ -1,6 +1,6 @@
 # robotics-ex2
 
-![Alt text]("Title")
+![Alt text](https://github.com/ibrahimchahine/robotics-ex2/blob/main/image.png "Title")
 
 This repo is for exercise 2 in the robotics course in ariel university.
 
