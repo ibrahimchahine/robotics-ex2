@@ -108,7 +108,7 @@ def is_datamatrix_like(roi):
 # Open the video file
 input_video_path = "challengeB.mp4"
 output_video_path = "output_video_with_datamatrix.mp4"
-cap = cv2.VideoCapture(input_video_path)
+cap = cv2.VideoCapture(0)
 
 # Get the video frame width, height, and frames per second (fps)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -130,7 +130,10 @@ while cap.isOpened():
     print(res_df)
     df = df.append(res_df)
     # Write the frame to the output video
+    cv2.imshow("frame", marked_frame)
     out.write(marked_frame)
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
 df.to_csv("out.csv")
 # Release the video capture and writer objects
 cap.release()
