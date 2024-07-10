@@ -14,4 +14,4 @@ The QR’s 3D info: the Distance to the camera, the yaw angle with respect to th
 
 1. CSV file:
    frameID,id,pos,dist,angle,pitch-roll
-2. Vidoe that contains markers and ids for each aruco code.
+2. Video that contains markers and ids for each aruco code.
