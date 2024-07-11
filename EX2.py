@@ -76,15 +76,30 @@ def detect_datamatrix(frame):
                         yaw = np.arctan2(-rvec_matrix[1, 2], rvec_matrix[1, 1])
                         pitch = np.arctan2(-rvec_matrix[2, 1], sy)
                         roll = 0
-                    cv2.putText(
-                        frame,
-                        str(ids[i]),
-                        (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        2,
-                        (255, 0, 0),
-                        2,
-                    )
+
+                    # Calculate the center of the frame
+                    frame_center_x = frame.shape[1] // 2
+                    frame_center_y = frame.shape[0] // 2
+
+                    # Calculate the center of the detected Data Matrix code
+                    datamatrix_center_x = x + w // 2
+                    datamatrix_center_y = y + h // 2
+
+                    # Determine instructions based on the position of the Data Matrix code
+                    instructions = ""
+                    if datamatrix_center_x < frame_center_x - 50:
+                        instructions += "Move Right "
+                    elif datamatrix_center_x > frame_center_x + 50:
+                        instructions += "Move Left "
+                    if datamatrix_center_y < frame_center_y - 50:
+                        instructions += "Move Down "
+                    elif datamatrix_center_y > frame_center_y + 50:
+                        instructions += "Move Up "
+                    # Determine rotation instructions based on the roll angle
+                    if roll > 10:
+                        instructions += "Rotate Right "
+                    elif roll < -10:
+                        instructions += "Rotate Left "
                     df_temp.loc[-1] = [
                         ids[i],
                         (x, y, w, h),
@@ -92,8 +107,18 @@ def detect_datamatrix(frame):
                         (np.degrees(yaw)),
                         (pitch, roll),
                     ]
-                    df_temp.index = df_temp.index + 1  # shifting index
-                    df_temp = df_temp.sort_index()  # sorting by index
+                    print(instructions)
+                    cv2.putText(
+                        frame,
+                        instructions,
+                        (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        2,
+                        (255, 0, 0),
+                        2,
+                    )
+                    df_temp.index = df_temp.index + 1
+                    df_temp = df_temp.sort_index()
     return frame, df_temp
 
 
@@ -109,7 +134,6 @@ def is_datamatrix_like(roi):
 input_video_path = "challengeB.mp4"
 output_video_path = "output_video_with_datamatrix.mp4"
 cap = cv2.VideoCapture(0)
-
 # Get the video frame width, height, and frames per second (fps)
 frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
