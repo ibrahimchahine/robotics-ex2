@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import pandas as pd
+import time
 
 # Example camera matrix and distortion coefficients
 camera_matrix = np.array([[800, 0, 320], [0, 800, 240], [0, 0, 1]], dtype=np.float32)
@@ -86,20 +87,30 @@ def detect_datamatrix(frame):
                     datamatrix_center_y = y + h // 2
 
                     # Determine instructions based on the position of the Data Matrix code
-                    instructions = ""
-                    if datamatrix_center_x < frame_center_x - 50:
-                        instructions += "Move Right "
-                    elif datamatrix_center_x > frame_center_x + 50:
-                        instructions += "Move Left "
-                    if datamatrix_center_y < frame_center_y - 50:
-                        instructions += "Move Down "
-                    elif datamatrix_center_y > frame_center_y + 50:
-                        instructions += "Move Up "
+                    instructions = "Id: " + str(ids[i]) + "\n"
                     # Determine rotation instructions based on the roll angle
-                    if roll > 10:
-                        instructions += "Rotate Right "
-                    elif roll < -10:
-                        instructions += "Rotate Left "
+                    if yaw > 0:
+                        instructions += "1. Rotate Right "
+                        instructions += "\n"
+                        print(yaw)
+                    elif yaw < 0:
+                        instructions += "2. Rotate Left "
+                        instructions += "\n"
+                        print(yaw)
+
+                    if datamatrix_center_x < frame_center_x - 100:
+                        instructions += "3. Move Left "
+                        instructions += "\n"
+                    elif datamatrix_center_x > frame_center_x + 100:
+                        instructions += "4. Move Right "
+                        instructions += "\n"
+                    if datamatrix_center_y < frame_center_y - 100:
+                        instructions += "5. Move Up "
+                        instructions += "\n"
+                    elif datamatrix_center_y > frame_center_y + 100:
+                        instructions += "6. Move Down "
+                        instructions += "\n"
+
                     df_temp.loc[-1] = [
                         ids[i],
                         (x, y, w, h),
@@ -111,9 +122,9 @@ def detect_datamatrix(frame):
                     cv2.putText(
                         frame,
                         instructions,
-                        (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        2,
+                        (0, 100),
+                        cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                        1,
                         (255, 0, 0),
                         2,
                     )
@@ -146,12 +157,13 @@ out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height
 # Process the video frame by frame
 while cap.isOpened():
     ret, frame = cap.read()
+    time.sleep(0.5)
     if not ret:
         break
 
     # Detect and mark Data Matrix codes in the current frame
     marked_frame, res_df = detect_datamatrix(frame)
-    print(res_df)
+    # print(res_df)
     df = df.append(res_df)
     # Write the frame to the output video
     cv2.imshow("frame", marked_frame)
