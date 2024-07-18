@@ -157,7 +157,7 @@ out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height
 # Process the video frame by frame
 while cap.isOpened():
     ret, frame = cap.read()
-    time.sleep(0.5)
+    #time.sleep(0.5)
     if not ret:
         break
 
